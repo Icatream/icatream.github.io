@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Icatream
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
-language: en
-timezone: ''
+author: Icatream
+language: zh-CN
+timezone: 'Asia/Shanghai'
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: https://icatream.github.io
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -33,9 +33,9 @@ skip_render:
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
-titlecase: false # Transform title into titlecase
+titlecase: true # Transform title into titlecase
 external_link:
-  enable: true # Open external links in new tab
+  enable: false # Open external links in new tab
   field: site # Apply to the whole site
   exclude: ''
 filename_case: 0
@@ -48,7 +48,7 @@ highlight:
   line_number: true
   auto_detect: false
   tab_replace: ''
-
+auto_spacing: true
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
 # per_page: Posts displayed per page. (0 = disable pagination)
@@ -74,7 +74,7 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## Use post's date for updated date unless set in front-matter
-use_date_for_updated: false
+use_date_for_updated: true
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -98,4 +98,4 @@ theme: landscape
 deploy:
   type: git
   repo: https://github.com/Icatream/icatream.github.io/
-  branch:  master
+  branch:  src

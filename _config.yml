@@ -5,7 +5,7 @@
 # Site
 title: Icatream
 subtitle: ''
-description: ''
+description: 'The description is no description.'
 keywords:
 author: Icatream
 language: zh-CN
@@ -35,7 +35,7 @@ new_post_name: :title.md # File name of new posts
 default_layout: post
 titlecase: true # Transform title into titlecase
 external_link:
-  enable: false # Open external links in new tab
+  enable: true # Open external links in new tab
   field: site # Apply to the whole site
   exclude: ''
 filename_case: 0
@@ -49,6 +49,7 @@ highlight:
   auto_detect: false
   tab_replace: ''
 auto_spacing: true
+
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
 # per_page: Posts displayed per page. (0 = disable pagination)
@@ -74,7 +75,7 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## Use post's date for updated date unless set in front-matter
-use_date_for_updated: true
+use_date_for_updated: false
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -87,15 +88,27 @@ include:
 exclude:
 ignore:
 
-# Extensions
-## Plugins: https://hexo.io/plugins/
-## Themes: https://hexo.io/themes/
-theme: landscape
-#theme: jekyll-theme-cayman
-
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
   repo: https://github.com/Icatream/icatream.github.io/
-  branch:  src
+  branch:  master
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: next
+
+feed:  
+ type: atom  
+ path: atom.xml  
+ limit: 0  
+ plugins:
+   - hexo-generator-feed
+
+search:
+  path: ./public/search.xml
+  field: post
+  format: html
+  limit: 10000

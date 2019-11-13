@@ -1,0 +1,60 @@
+rss: /atom.xml
+
+footer:
+  since: 2019
+
+# Schemes
+#scheme: Muse
+scheme: Mist
+#scheme: Pisces
+#scheme: Gemini
+
+menu:
+  home: / || home
+  about: /about/ || user
+  #tags: /tags/ || tags
+  categories: /categories/ || th
+  archives: /archives/ || archive
+  #schedule: /schedule/ || calendar
+  #sitemap: /sitemap.xml || sitemap
+  #commonweal: /404/ || heartbeat
+
+# Sidebar Avatar
+avatar:
+  # Replace the default image and set the url here.
+  url: /images/avatar.jpg
+  # If true, the avatar would be dispalyed in circle.
+  rounded: false
+  # If true, the avatar would be rotated with the cursor.
+  rotated: false
+
+# Social Links
+# Usage: `Key: permalink || icon`
+# Key is the link label showing to end users.
+# Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
+social:
+  GitHub: https://github.com/Icatream || github
+  E-Mail: mailto:windc96@gmail.com || envelope
+  #Weibo: https://weibo.com/yourname || weibo
+  #Google: https://plus.google.com/yourname || google
+  #Twitter: https://twitter.com/yourname || twitter
+  #FB Page: https://www.facebook.com/yourname || facebook
+  #VK Group: https://vk.com/yourname || vk
+  #StackOverflow: https://stackoverflow.com/yourname || stack-overflow
+  #YouTube: https://youtube.com/yourname || youtube
+  #Instagram: https://instagram.com/yourname || instagram
+  #Skype: skype:yourname?call|chat || skype
+
+# Local Search
+# Dependencies: https://github.com/theme-next/hexo-generator-searchdb
+local_search:
+  enable: true
+  # If auto, trigger search by changing input.
+  # If manual, trigger search by pressing enter key or search button.
+  trigger: auto
+  # Show top n results per article, show all results by setting to -1
+  top_n_per_article: 1
+  # Unescape html strings to the readable one.
+  unescape: false
+  # Preload the search data when the page loads.
+  preload: false

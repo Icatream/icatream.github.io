@@ -4,6 +4,7 @@ date: 2019-11-14 11:10:59
 tags: Rust
 categories: essay
 ---
+
 # MSVC
 [Rust官网](https://www.rust-lang.org/)提供了*rustup-init.exe*.
 除此之外, 还需要一个c编译器. windows环境说的也不是很清楚.

@@ -58,3 +58,19 @@ local_search:
   unescape: false
   # Preload the search data when the page loads.
   preload: false
+
+# Gitalk
+# Demo: https://gitalk.github.io
+# For more information: https://github.com/gitalk/gitalk
+gitalk:
+  enable: true
+  github_id: Icatream
+  repo: icatream.github.io
+  client_id: 8ade9fb3c97a4e2d2377
+  client_secret: b9225c4aa174f735d1b35b58b44b60cb41a5e2c5
+  admin_user: Icatream
+  distraction_free_mode: true # Facebook-like distraction free mode
+  # Gitalk's display language depends on user's browser or system environment
+  # If you want everyone visiting your site to see a uniform language, you can set a force language value
+  # Available values: en | es-ES | fr | ru | zh-CN | zh-TW
+  language:

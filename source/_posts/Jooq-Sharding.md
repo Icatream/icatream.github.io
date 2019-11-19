@@ -113,7 +113,7 @@ DSL.using(holder.get(id))
 
 修改 ```Settings```, 指定相应的 ```Schema``` 的相应的 ```Table``` 进行重命名.
 
-于是, 就有了上面的代码. 对 ```Configuration``` 进行 ```derive``` 且缓存. 使用时, 从 ```LoadingCache``` 中获取派生的 ```Configuration``` , 使用 ```DSL.using(Configuration configuration)``` 进行 ```SQL``` 操作.
+于是, 就有了[上述](#Code)代码. 对 ```Configuration``` 进行 ```derive``` 且缓存. 使用时, 从 ```LoadingCache``` 中获取派生的 ```Configuration``` , 使用 ```DSL.using(Configuration configuration)``` 进行 ```SQL``` 操作.
 
 # 总结
 

@@ -11,4 +11,4 @@ Allow: /css/
 Allow: /js/
 Allow: /lib/
 
-Sitemap: https://icatream.github.io
+Sitemap: https://icatream.github.io/sitemap.xml

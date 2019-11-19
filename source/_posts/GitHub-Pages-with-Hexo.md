@@ -174,7 +174,7 @@ Allow: /css/
 Allow: /js/
 Allow: /lib/
 
-Sitemap: https://icatream.github.io
+Sitemap: https://icatream.github.io/sitemap.xml
 ```
 
 [Robots testing](https://www.google.com/webmasters/tools/robots-testing-tool)

@@ -4,7 +4,7 @@ date: 2019-11-19 15:41:31
 tags:
   - Java
   - Jooq
-categories: coding
+categories: code
 ---
 
 # Code

@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /about/
+Allow: /tags/
+Allow: /categories/
+
+Disallow: /css/
+Disallow: /js/
+Disallow: /lib/
+
+Sitemap: https://icatream.github.io

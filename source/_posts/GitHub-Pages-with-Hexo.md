@@ -124,6 +124,22 @@ script:
   - hexo generate # generate static files
 ```
 
+## 404
+
+网上找了很多关于 404 配置的内容, 都无法生效. 后面, 找到了一个 [github issues](https://github.com/ppoffice/hexo-theme-icarus/issues/66#issuecomment-166110566) 才明白, 本地重定向是无效的. 所以, 无论怎么设置, 本地 ```hexo server``` 都无法进行 404 页面重定向. 不过, 还是可以通过 <http://localhost:4000/404.html> 进行查看修改页面的.
+
+我没特别准备 404 页面, 就写了一个 md page.
+
+```
+---
+title: 404
+comments: false
+permalink: /404
+---
+```
+
+是否需要这个 ```permalink: /404``` 我就不清楚了, 毕竟本地无法重定向, 得部署到 *github pages* 上才能检查.
+
 # 总结
 
 最终没有上传 *./themes/* , Travis CI 通过 ```git clone``` 获取 *./themes/next*, 之后编译.

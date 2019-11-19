@@ -23,7 +23,7 @@ Gitpage 本身提供的是 Jekyll, Jekyll 在 windows 下环境准备就很麻�
 
 根据 github 官方说明
 
->User pages must be built from the master branch
+> User pages must be built from the master branch
 
 *username.github.io* 被认为是 *user pages*, 而 *user pages* 只能从 master branch 构建.
 
@@ -98,11 +98,11 @@ NexT 推荐的安装方式是 ```git clone https://github.com/theme-next/hexo-th
 如果修改这个, 更新时 pull 会比较麻烦, 很可能会引起冲突.
 里面有个 *override* 属性, 查看注释.
 
->If false, merge configs from `_data/next.yml` into default configuration (rewrite).
->If true, will fully override default configuration by options from `_data/next.yml` (override). Only for NexT settings.
->And if true, all config from default NexT `_config.yml` must be copied into `next.yml`. Use if you know what you are doing.
->Useful if you want to comment some options from NexT `_config.yml` by `next.yml` without editing default config.
->override: false
+> If false, merge configs from `_data/next.yml` into default configuration (rewrite).
+> If true, will fully override default configuration by options from `_data/next.yml` (override). Only for NexT settings.
+> And if true, all config from default NexT `_config.yml` must be copied into `next.yml`. Use if you know what you are doing.
+> Useful if you want to comment some options from NexT `_config.yml` by `next.yml` without editing default config.
+> override: false
 
 也就是说, 默认情况下, *_data/next.yml* 会覆盖掉 *./themes/next/_config.yml* 的配置. 这样就很容易了. 建一个 *./source/_data/next.yml* 文件, 把配置写进去. 这样就不用修改 *./themes/next* 里的内容.
 

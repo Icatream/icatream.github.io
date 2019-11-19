@@ -140,6 +140,55 @@ permalink: /404
 
 是否需要这个 ```permalink: /404``` 我就不清楚了, 毕竟本地无法重定向, 得部署到 *github pages* 上才能检查.
 
+## sitemap
+
+blog 里能加的配置还挺多的, 今天还研究了下 sitemap 与 google search console.
+
+```
+npm install hexo-generator-sitemap --save
+```
+
+首先, 添加 ```hexo``` 的 ```sitemap``` 插件. 再在 *_config.yml* 里加上配置.
+
+```
+sitemap:
+    path: sitemap.xml
+    rel: true
+```
+
+部署完成之后, 就可以去 [Google Search Console](https://search.google.com/search-console/) 里添加站点.
+
+在 ```/source/``` 下添加 *robots.txt*.
+
+```
+User-agent: *
+Allow: /
+Allow: /about/
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/
+
+Allow: /images/
+
+Allow: /css/
+Allow: /js/
+Allow: /lib/
+
+Sitemap: https://icatream.github.io
+```
+
+网上看到的内容都是
+
+```
+Disallow: /css/
+Disallow: /js/
+Disallow: /lib/
+```
+
+但这样会导致 Googlebot 的抓取异常. 这些内容也都应该被允许抓取.
+
+```hexo``` 官方的 ```hexo-generator-sitemap``` 似乎不够 *SEO (search engine optimization)* 友好. 考虑换其他的 *sitemap-generator*.
+
 # 总结
 
 最终没有上传 *./themes/* , Travis CI 通过 ```git clone``` 获取 *./themes/next*, 之后编译.

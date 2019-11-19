@@ -177,6 +177,8 @@ Allow: /lib/
 Sitemap: https://icatream.github.io
 ```
 
+[Robots testing](https://www.google.com/webmasters/tools/robots-testing-tool)
+
 网上看到的内容都是
 
 ```

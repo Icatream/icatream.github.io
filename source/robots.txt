@@ -5,8 +5,8 @@ Allow: /about/
 Allow: /tags/
 Allow: /categories/
 
-Disallow: /css/
-Disallow: /js/
-Disallow: /lib/
+Allow: /css/
+Allow: /js/
+Allow: /lib/
 
 Sitemap: https://icatream.github.io

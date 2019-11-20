@@ -78,7 +78,7 @@ public class ConfigurationHolder<R, S> {
 DefaultConfiguration config;
 TableImpl<Record> fakeTable;
 
-ConfigurationHolder<Integer, Integer> holder = ConfigurationHolder.newInstance(config, fakeTable, id -> id & (1 << 4), (original, val) -> oldName + val);
+ConfigurationHolder<Integer, Integer> holder = ConfigurationHolder.newInstance(config, fakeTable, id -> id & i & ((1 << 4) - 1), (originalName, shardingVal) -> originalName + shardingVal);
 
 int id = 1000;
 DSL.using(holder.get(id))

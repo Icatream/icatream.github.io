@@ -144,21 +144,43 @@ permalink: /404
 
 blog 里能加的配置还挺多的, 今天还研究了下 sitemap 与 google search console.
 
+### 官方 sitemap-gen
+
+添加 ```hexo``` 的 ```sitemap``` 插件. 
+
 ```
 npm install hexo-generator-sitemap --save
 ```
 
-首先, 添加 ```hexo``` 的 ```sitemap``` 插件. 再在 *_config.yml* 里加上配置.
+在 *_config.yml* 里加上配置.
 
 ```
 sitemap:
-    path: sitemap.xml
-    rel: true
+  path: sitemap.xml
+  #template: ./sitemap_template.xml
+  rel: true
 ```
 
-部署完成之后, 就可以去 [Google Search Console](https://search.google.com/search-console/) 里添加站点.
+### SEO friendly sitemap
 
-在 ```/source/``` 下添加 *robots.txt*.
+官方的 ```hexo-generator-sitemap``` 生成的是一个大的 sitemap , 这样不够 *SEO(search engine optimization)* 友好. 应该将 sitemap 拆分成多个小的.
+
+这里选择了 [hexo-generator-seo-friendly-sitemap](https://github.com/ludoviclefevre/hexo-generator-seo-friendly-sitemap), 也有其他 SEO 友好的 sitemap-generator 可以选择.
+
+```
+npm install hexo-generator-seo-friendly-sitemap --save
+```
+
+*_config.yml*
+
+```
+sitemap:
+  path: sitemap.xml
+```
+
+### robots.txt
+
+在 */source/* 下添加 *蜘蛛协议* 的 *robots.txt*.
 
 ```
 User-agent: *
@@ -189,7 +211,8 @@ Disallow: /lib/
 
 但这样会导致 Googlebot 的抓取异常. 这些内容也都应该被允许抓取.
 
-```hexo``` 官方的 ```hexo-generator-sitemap``` 似乎不够 *SEO (search engine optimization)* 友好. 考虑换其他的 *sitemap-generator*.
+
+部署完成之后, 就可以去 [Google Search Console](https://search.google.com/search-console/) 里添加站点.
 
 # 总结
 

@@ -101,11 +101,11 @@ deploy:
 theme: next
 
 feed:  
- type: atom  
- path: atom.xml  
- limit: 0  
- plugins:
-   - hexo-generator-feed
+  type: atom  
+  path: atom.xml  
+  limit: 0  
+  plugins:
+    - hexo-generator-feed
 
 search:
   path: ./public/search.xml
@@ -114,6 +114,4 @@ search:
   limit: 10000
 
 sitemap:
-    path: sitemap.xml
-    #template: ./sitemap_template.xml
-    rel: true
+  path: sitemap.xml

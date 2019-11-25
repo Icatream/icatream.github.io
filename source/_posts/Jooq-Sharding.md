@@ -87,7 +87,7 @@ DSL.using(holder.get(id))
 
 # 解释
 
-最初试想 ```jooq``` 的 ```SQL``` 语句来源于对象, ```TableImpl``` 对象的构造函数中有一个包含名称的构造函数.
+最初试想 `jooq` 的 `SQL` 语句来源于对象, `TableImpl` 对象的构造函数中有一个包含名称的构造函数.
 
 > ```Java
 > public TableImpl(String name) {
@@ -95,7 +95,7 @@ DSL.using(holder.get(id))
 > }
 > ```
 
-似乎是这个决定了表名. 那么创建一个修改过表名的 ```TableImpl``` 对象应该能实现表名的修改. 结果当然未尝所愿.
+似乎是这个决定了表名. 那么创建一个修改过表名的 `TableImpl` 对象应该能实现表名的修改. 结果当然未尝所愿.
 
 这个构造器只是用来 *alias* 的 (取一个别名).
 
@@ -111,9 +111,9 @@ DSL.using(holder.get(id))
 >         .withOutput("MY_APP__AUTHOR"))));
 > ```
 
-修改 ```Settings```, 指定相应的 ```Schema``` 的相应的 ```Table``` 进行重命名.
+修改 `Settings`, 指定相应的 `Schema` 的相应的 `Table` 进行重命名.
 
-于是, 就有了[上述](#Code)代码. 对 ```Configuration``` 进行 ```derive``` 且缓存. 使用时, 从 ```LoadingCache``` 中获取派生的 ```Configuration``` , 使用 ```DSL.using(Configuration configuration)``` 进行 ```SQL``` 操作.
+于是, 就有了[上述](#Code)代码. 对 `Configuration` 进行 `derive` 且缓存. 使用时, 从 `LoadingCache` 中获取派生的 `Configuration` , 使用 `DSL.using(Configuration configuration)` 进行 `SQL` 操作.
 
 # 总结
 
@@ -127,4 +127,4 @@ DSL.using(holder.get(id))
 > }
 > ```
 
-```DSLContext.using``` 是创建一个新的 ```DefaultDSLContext```, 其实可以把 ```DSLContext``` 给缓存起来, 而不仅仅是 ```Configuration```.
+`DSLContext.using` 是创建一个新的 `DefaultDSLContext`, 其实可以把 `DSLContext` 给缓存起来, 而不仅仅是 `Configuration`.

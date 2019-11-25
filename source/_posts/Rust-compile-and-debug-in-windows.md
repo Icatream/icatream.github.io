@@ -6,16 +6,17 @@ categories: essay
 ---
 
 # MSVC
-[Rust官网](https://www.rust-lang.org/) 提供了 *rustup-init.exe*.
+[Rust官网](https://www.rust-lang.org/) 提供了 `rustup-init.exe`.
 除此之外, 还需要一个c编译器. windows环境说的也不是很清楚.
 好在9102年了, 微软出了一个简单的安装工具 *vs_buildtools*.
 在这个页面下 [Visual Studio Download](https://visualstudio.microsoft.com/zh-hans/downloads/), 找到 **Visual Studio 生成工具** 下载运行, 选择需要的功能安装即可, 无需安装整个 *Visaul Studio*.
 
 ## Proxy
 
-国内嘛, *cargo* 当然是需要 proxy 的.
-在 *C:\Users\username\.cargo* 下创建 *config* 文件.
+国内嘛, `cargo` 当然是需要 *proxy* 的.
+在 `C:\Users\username\.cargo` 下创建 `config` 文件.
 内容如下:
+
 ```
 [http]
 proxy = "127.0.0.1:1080"
@@ -24,7 +25,7 @@ proxy = "127.0.0.1:1080"
 proxy = "127.0.0.1:1080"
 ```
 
-* *rustup* 也需要 proxy.
+* `rustup` 也需要 *proxy*.
 
 * cmd proxy
 
@@ -42,11 +43,11 @@ $ENV:HTTPS_PROXY=127.0.0.1:1080
 
 ## Vscode Debug
 
-vscode 安装 *Rust Extension Pack* 插件(全套Rust插件), *C/C++*, *Native Debug* 插件, 就可以用 msvc 工具链 debug 了. 但每次都得改需要 debug 的 .exe 文件名, 很麻烦(不知道有没有更好的办法). 而且, 在查看 ```Option<Box<T>>``` 的时候会出些问题, 明明是 ```Some``` 却显示 ```None```.
+*vscode* 安装 *Rust Extension Pack* 插件(全套Rust插件), *C/C++*, *Native Debug* 插件, 就可以用 *msvc* 工具链 debug 了. 但每次都得改需要 debug 的 `.exe` 文件名, 很麻烦(不知道有没有更好的办法). 而且, 在查看 `Option<Box<T>>` 的时候会出些问题, 明明是 `Some` 却显示 `None`.
 
 # GNU
 
-Jetbrains 的 Clion 只能用 gnu 工具链进行 debug.
+Jetbrains 的 Clion 只支持用 *gnu* 工具链进行 debug.
 
 ## 工具链切换
 
@@ -71,7 +72,7 @@ windows 下安装 gnu 环境需要安装 mingw64.
 
 再将 *rustup* 切换到 gnu 工具链, Clion 中设置一下 Toolchains 就可以使用 Clion 进行 debug 了. Clion 的 debug 界面就清晰很多了, 也不用每次在配置文件中修改 .exe 文件名.
 
-但是, ```Option<Box<T>>``` 完全没有内容, 之前 vscode 存在异常, Clion 里直接看不了堆内存...
+但是, `Option<Box<T>>` 完全没有内容, 之前 vscode 存在异常, Clion 里直接看不了堆内存...
 
 # 踩坑
 
@@ -85,4 +86,4 @@ windows 下安装 gnu 环境需要安装 mingw64.
 
 ## 总结
 
-这一趟下来, 别的没啥, proxy 命令学了很多.
+这一趟下来, 别的没啥, *proxy* 命令学了很多.

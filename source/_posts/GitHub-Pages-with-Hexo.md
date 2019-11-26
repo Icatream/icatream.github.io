@@ -241,7 +241,7 @@ Disallow: /lib/
     pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
   ```
 
-  `pjax` 设置为 `true` 居然是从本地加载 *js* 的. 只好加上 `vendor` 设置了.
+  `pjax` 设置为 `true` 居然是从本地加载 *js* 的. 只好加上 `vendor` 设置.
 
 * *images zooming*
 

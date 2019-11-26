@@ -112,3 +112,11 @@ local_search:
   unescape: false
   # Preload the search data when the page loads.
   preload: false
+
+# Script Vendors. Set a CDN address for the vendor you want to customize.
+# Be aware that you would better use the same version as internal ones to avoid potential problems.
+# Remember to use the https protocol of CDN files when you enable https on your site.
+vendors:
+  # Internal version: 0.2.8
+  # pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
+  pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js

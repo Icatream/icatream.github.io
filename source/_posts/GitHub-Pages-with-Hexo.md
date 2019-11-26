@@ -89,12 +89,12 @@ Hexo 的 theme 的使用方式是将 theme 下载下来, 放到 *./themes/* 目�
 
 我懒得折腾一堆图片, 最终选择了 [next](https://github.com/theme-next/hexo-theme-next).
 
-### NexT
+### NexT 配置文件
 
-NexT 维护的很好, 功能丰富, 使用起来很方便.
+`NexT` 维护的很好, 功能丰富, 使用起来很方便.
 
-NexT 推荐的安装方式是 `git clone https://github.com/theme-next/hexo-theme-next themes/next`. 
-而 NexT 的配置在 `./themes/next/_config.yml` 里.
+`NexT` 推荐的安装方式是 `git clone https://github.com/theme-next/hexo-theme-next themes/next`. 
+而 `NexT` 的配置在 `./themes/next/_config.yml` 里.
 如果修改这个, 更新时 `git pull` 会比较麻烦, 很可能会引起冲突.
 里面有个 `override` 属性, 查看注释.
 
@@ -111,7 +111,7 @@ NexT 推荐的安装方式是 `git clone https://github.com/theme-next/hexo-them
 目前 `./themes/next` 是没有上传 github 的, 这样整个工程是不完整的, Travis CI 是无法编译的. 
 
 要不要把 `./themes/next` 上传?
-* 上传也会导致 next 更新的时候变得有些麻烦.
+* 上传也会导致 `NexT` 更新的时候变得有些麻烦.
 * 不上传, 就只能本地编译, *hexo-deployer* 部署
 
 想想别的办法.
@@ -219,6 +219,63 @@ Disallow: /lib/
 ### Google Search Console
 
 部署完成之后, 就可以去 [Google Search Console](https://search.google.com/search-console/) 里添加站点.
+
+# NexT
+
+## NexT 可选插件
+
+`NexT` 的设置中有一些好用却没有默认开启的功能.
+
+这些插件是通过 *CDN* 加载 *js* 的形式引入的, 无需本地 `npm` 引入编译.
+
+* `pjax`
+
+  `pjax` 是用于 `ajax` 异步加载的, 居然没有开启.
+
+  > Easily enable fast Ajax navigation on your website.
+  > <https://github.com/theme-next/theme-next-pjax>
+
+  ```
+  pjax: true
+  ```
+
+* *images zooming*
+
+  图片缩放, `NexT` 提供了 `fancybox` 和 `mediumzoom` 二者选一. Blog 内有图片可以开启.
+
+  > **Do not enable both `fancybox` and `mediumzoom`**.
+
+  > FancyBox is a tool that offers a nice and elegant way to add zooming functionality for images.
+  > <https://fancyapps.com/fancybox>
+
+  > A JavaScript library for zooming images like Medium.
+  > <https://github.com/francoischalifour/medium-zoom>
+
+  ```
+  fancybox: false
+  mediumzoom: false
+  ```
+
+* *images lazyloading*
+
+  图片延迟加载, 同样被默认关闭了.
+
+  > Vanilla JavaScript plugin for lazyloading images.
+  > <https://github.com/ApoorvSaxena/lozad.js>
+
+  ```
+  lazyload: true
+  ```
+
+* `pangu`
+
+  `pangu` 是用于给中文和英文之间加上空格的, 无需手打空格.
+
+  > <https://github.com/vinta/pangu.js>
+
+  ```
+  pangu: true
+  ```
 
 # 总结
 

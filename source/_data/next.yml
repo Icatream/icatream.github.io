@@ -26,7 +26,7 @@ avatar:
   # If true, the avatar would be dispalyed in circle.
   rounded: true
   # If true, the avatar would be rotated with the cursor.
-  rotated: false
+  rotated: true
 
 # Social Links
 # Usage: `Key: permalink || icon`

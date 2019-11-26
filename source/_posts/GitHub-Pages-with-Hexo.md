@@ -281,6 +281,14 @@ Disallow: /lib/
   pangu: true
   ```
 
+## 小结
+
+事实是, 加了 `pjax`, `lozad`, 在 [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) 中的结果也没变好...
+
+依旧提示
+
+> 推迟加载屏幕外图片
+
 # 总结
 
 最终没有上传 `./themes/` , Travis CI 通过 `git clone` 获取 `./themes/next`, 之后编译.

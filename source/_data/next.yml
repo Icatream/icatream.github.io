@@ -22,7 +22,7 @@ menu:
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
-  url: /images/avatar/round.jpg
+  url: /images/avatar/square.jpg
   # If true, the avatar would be dispalyed in circle.
   rounded: true
   # If true, the avatar would be rotated with the cursor.

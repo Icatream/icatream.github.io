@@ -9,6 +9,7 @@ scheme: Mist
 #scheme: Pisces
 #scheme: Gemini
 
+
 menu:
   home: / || home
   about: /about/ || user
@@ -19,6 +20,34 @@ menu:
   #sitemap: /sitemap.xml || sitemap
   #commonweal: /404/ || heartbeat
 
+
+# ---------------------------------------------------------------
+# Sidebar Settings
+# See: https://theme-next.org/docs/theme-settings/sidebar
+# ---------------------------------------------------------------
+
+sidebar:
+  # Sidebar Position.
+  #position: left
+  position: right
+
+  # Manual define the sidebar width. If commented, will be default for:
+  # Muse | Mist: 320
+  # Pisces | Gemini: 240
+  #width: 300
+
+  # Sidebar Display (only for Muse | Mist), available values:
+  #  - post    expand on posts automatically. Default.
+  #  - always  expand for all pages automatically.
+  #  - hide    expand only when click on the sidebar toggle icon.
+  #  - remove  totally remove sidebar including sidebar toggle.
+  display: post
+
+  # Sidebar offset from top menubar in pixels (only for Pisces | Gemini).
+  offset: 12
+  # Enable sidebar on narrow view (only for Muse | Mist).
+  onmobile: true
+
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
@@ -27,6 +56,7 @@ avatar:
   rounded: true
   # If true, the avatar would be rotated with the cursor.
   rotated: true
+
 
 # Social Links
 # Usage: `Key: permalink || icon`
@@ -45,6 +75,7 @@ social:
   #Instagram: https://instagram.com/yourname || instagram
   #Skype: skype:yourname?call|chat || skype
 
+
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
 toc:
@@ -57,6 +88,19 @@ toc:
   expand_all: true
   # Maximum heading depth of generated toc.
   max_depth: 6
+
+
+# ---------------------------------------------------------------
+# Misc Theme Settings
+# ---------------------------------------------------------------
+
+back2top:
+  enable: true
+  # Back to top in sidebar.
+  sidebar: false
+  # Scroll percent label in b2t button.
+  scrollpercent: true
+
 
 # Easily enable fast Ajax navigation on your website.
 # Dependencies: https://github.com/theme-next/theme-next-pjax
@@ -75,6 +119,7 @@ lazyload: true
 # For more information: https://github.com/vinta/pangu.js
 pangu: true
 
+
 # Gitalk
 # Demo: https://gitalk.github.io
 # For more information: https://github.com/gitalk/gitalk
@@ -91,6 +136,7 @@ gitalk:
   # Available values: en | es-ES | fr | ru | zh-CN | zh-TW
   language:
 
+
 # Google Analytics
 google_analytics:
   tracking_id: UA-152858740-1
@@ -98,6 +144,7 @@ google_analytics:
   # By default, NexT will load an external gtag.js script on your site.
   # If you only need the pageview feature, set the following option to true to get a better performance.
   only_pageview: false
+
 
 # Local Search
 # Dependencies: https://github.com/theme-next/hexo-generator-searchdb
@@ -113,6 +160,7 @@ local_search:
   # Preload the search data when the page loads.
   preload: false
 
+
 # Script Vendors. Set a CDN address for the vendor you want to customize.
 # Be aware that you would better use the same version as internal ones to avoid potential problems.
 # Remember to use the https protocol of CDN files when you enable https on your site.
@@ -120,6 +168,7 @@ vendors:
   # Internal version: 0.2.8
   # pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
   pjax: //cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js
+
 
 excerpt:
   depth: 2

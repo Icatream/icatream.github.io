@@ -102,6 +102,10 @@ back2top:
   scrollpercent: true
 
 
+# Automatically add external URL with Base64 encrypt & decrypt.
+exturl: true
+
+
 # Easily enable fast Ajax navigation on your website.
 # Dependencies: https://github.com/theme-next/theme-next-pjax
 pjax: true

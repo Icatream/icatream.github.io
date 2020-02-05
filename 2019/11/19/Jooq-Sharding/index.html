@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Icatream" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Code123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960import com.google.common.cache.CacheBuilder;import com.google.common.cache.CacheLoade">
+<meta name="keywords" content="Java,Jooq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jooq 分表">
+<meta property="og:url" content="https:&#x2F;&#x2F;icatream.github.io&#x2F;2019&#x2F;11&#x2F;19&#x2F;Jooq-Sharding&#x2F;index.html">
+<meta property="og:site_name" content="Icatream">
+<meta property="og:description" content="Code123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960import com.google.common.cache.CacheBuilder;import com.google.common.cache.CacheLoade">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-19T11:44:17.324Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://icatream.github.io/2019/11/19/Jooq-Sharding/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Jooq 分表 | Icatream</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-152858740-1"></script>
+    <script>
+      var host = window.location.hostname;
+      if (host !== "localhost" || !true) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-152858740-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Icatream</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://icatream.github.io/2019/11/19/Jooq-Sharding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Icatream">
+      <meta itemprop="description" content="The description is no description.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Icatream">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Jooq 分表
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2019-11-19 15:41:31 / 修改时间：19:44:17" itemprop="dateCreated datePublished" datetime="2019-11-19T15:41:31+08:00">2019-11-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/code/" itemprop="url" rel="index">
+                    <span itemprop="name">code</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.google.common.cache.CacheBuilder;</span><br><span class="line"><span class="keyword">import</span> com.google.common.cache.CacheLoader;</span><br><span class="line"><span class="keyword">import</span> com.google.common.cache.LoadingCache;</span><br><span class="line"><span class="keyword">import</span> org.jooq.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.MappedSchema;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.MappedTable;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.RenderMapping;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.Settings;</span><br><span class="line"><span class="keyword">import</span> org.jooq.impl.TableImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.BiFunction;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;R&gt; row</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;S&gt; sharding value</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigurationHolder</span>&lt;<span class="title">R</span>, <span class="title">S</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LoadingCache&lt;S, Configuration&gt; cache;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Function&lt;R, S&gt; shardingFn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> shardingFn (shardingParameter) -&gt; shardingValue</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> renameFn   (originalTableName, shardingValue) -&gt; shardedTableName</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;R, S&gt; <span class="function">ConfigurationHolder&lt;R, S&gt; <span class="title">newInstance</span><span class="params">(Configuration configuration,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                               TableImpl table,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                               Function&lt;R, S&gt; shardingFn,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                               BiFunction&lt;String, S, String&gt; renameFn)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ConfigurationHolder&lt;&gt;(configuration, table.getName(), shardingFn, renameFn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ConfigurationHolder</span><span class="params">(Configuration configuration,</span></span></span><br><span class="line"><span class="function"><span class="params">                                String originalName,</span></span></span><br><span class="line"><span class="function"><span class="params">                                Function&lt;R, S&gt; shardingFn,</span></span></span><br><span class="line"><span class="function"><span class="params">                                BiFunction&lt;String, S, String&gt; renameFn)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.shardingFn = shardingFn;</span><br><span class="line">        <span class="keyword">this</span>.cache = CacheBuilder</span><br><span class="line">          .newBuilder()</span><br><span class="line">          .build(<span class="keyword">new</span> CacheLoader&lt;S, Configuration&gt;() &#123;</span><br><span class="line">              <span class="meta">@Override</span></span><br><span class="line">              <span class="function"><span class="keyword">public</span> Configuration <span class="title">load</span><span class="params">(S s)</span> </span>&#123;</span><br><span class="line">                  Settings settings = <span class="keyword">new</span> Settings()</span><br><span class="line">                    .withRenderMapping(<span class="keyword">new</span> RenderMapping()</span><br><span class="line">                      .withSchemata(<span class="keyword">new</span> MappedSchema()</span><br><span class="line">                        .withInputExpression(Pattern.compile(<span class="string">".*"</span>))</span><br><span class="line">                        .withTables(<span class="keyword">new</span> MappedTable()</span><br><span class="line">                          .withInput(originalName)</span><br><span class="line">                          .withOutput(renameFn.apply(originalName, s)))));</span><br><span class="line">                  <span class="keyword">return</span> configuration.derive(settings);</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Configuration <span class="title">get</span><span class="params">(R shardingParameter)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cache.getUnchecked(shardingFn.apply(shardingParameter));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Use"><a href="#Use" class="headerlink" title="Use"></a>Use</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DefaultConfiguration config;</span><br><span class="line">TableImpl&lt;Record&gt; fakeTable;</span><br><span class="line"></span><br><span class="line">ConfigurationHolder&lt;Integer, Integer&gt; holder = ConfigurationHolder.newInstance(config, fakeTable, id -&gt; id &amp; (<span class="number">1</span> &lt;&lt; <span class="number">4</span>), (original, val) -&gt; oldName + val);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> id = <span class="number">1000</span>;</span><br><span class="line">DSL.using(holder.get(id))</span><br><span class="line">  .selectFrom(table);</span><br></pre></td></tr></table></figure>
+
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>最初试想 <code>jooq</code> 的 <code>SQL</code> 语句来源于对象, <code>TableImpl</code> 对象的构造函数中有一个包含名称的构造函数.</p>
+<blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TableImpl</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>(DSL.name(name));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>似乎是这个决定了表名. 那么创建一个修改过表名的 <code>TableImpl</code> 对象应该能实现表名的修改. 结果当然未尝所愿.</p>
+<p>这个构造器只是用来 <em>alias</em> 的 (取一个别名).</p>
+<p>关于表的重命名, 官网上给出的做法是</p>
+<blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Settings settings = <span class="keyword">new</span> Settings()</span><br><span class="line">  .withRenderMapping(<span class="keyword">new</span> RenderMapping()</span><br><span class="line">    .withSchemata(<span class="keyword">new</span> MappedSchema()</span><br><span class="line">      .withInput(<span class="string">"DEV"</span>)</span><br><span class="line">      .withTables(<span class="keyword">new</span> MappedTable()</span><br><span class="line">        .withInput(<span class="string">"AUTHOR"</span>)</span><br><span class="line">        .withOutput(<span class="string">"MY_APP__AUTHOR"</span>))));</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>修改 <code>Settings</code>, 指定相应的 <code>Schema</code> 的相应的 <code>Table</code> 进行重命名.</p>
+<p>于是, 就有了<a href="#Code">上述</a>代码. 对 <code>Configuration</code> 进行 <code>derive</code> 且缓存. 使用时, 从 <code>LoadingCache</code> 中获取派生的 <code>Configuration</code> , 使用 <code>DSL.using(Configuration configuration)</code> 进行 <code>SQL</code> 操作.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>尽整些没屁用的, 好好的数据库分表不用, 非要折腾个 mybatis 插件分表.</p>
+<h1 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h1><blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DSLContext <span class="title">using</span><span class="params">(Configuration configuration)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> DefaultDSLContext(configuration);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><code>DSLContext.using</code> 是创建一个新的 <code>DefaultDSLContext</code>, 其实可以把 <code>DSLContext</code> 给缓存起来, 而不仅仅是 <code>Configuration</code>.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Jooq/" rel="tag"># Jooq</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/14/GitHub-Pages-with-Hexo/" rel="next" title="GitHub-Pages Hexo Travis NexT">
+                  <i class="fa fa-chevron-left"></i> GitHub-Pages Hexo Travis NexT
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Code"><span class="nav-number">1.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Use"><span class="nav-number">2.</span> <span class="nav-text">Use</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">3.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后续"><span class="nav-number">5.</span> <span class="nav-text">后续</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Icatream"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Icatream</p>
+  <div class="site-description" itemprop="description">The description is no description.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Icatream" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Icatream" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/mailto:windc96@gmail.com" title="E-Mail → mailto:windc96@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/7170627/icatream" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;7170627&#x2F;icatream" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Icatream</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: '8ade9fb3c97a4e2d2377',
+      clientSecret: 'b9225c4aa174f735d1b35b58b44b60cb41a5e2c5',
+      repo: 'icatream.github.io',
+      owner: 'Icatream',
+      admin: ['Icatream'],
+      id: '928522047c5cb236d682ecbcd0649266',
+        language: '',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>

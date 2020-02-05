@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Jooq 分表</title>
+    <url>/2019/11/19/Jooq-Sharding/</url>
+    <content><![CDATA[<h1 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.google.common.cache.CacheBuilder;</span><br><span class="line"><span class="keyword">import</span> com.google.common.cache.CacheLoader;</span><br><span class="line"><span class="keyword">import</span> com.google.common.cache.LoadingCache;</span><br><span class="line"><span class="keyword">import</span> org.jooq.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.MappedSchema;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.MappedTable;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.RenderMapping;</span><br><span class="line"><span class="keyword">import</span> org.jooq.conf.Settings;</span><br><span class="line"><span class="keyword">import</span> org.jooq.impl.TableImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.BiFunction;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;R&gt; row</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;S&gt; sharding value</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigurationHolder</span>&lt;<span class="title">R</span>, <span class="title">S</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LoadingCache&lt;S, Configuration&gt; cache;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Function&lt;R, S&gt; shardingFn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> shardingFn (shardingParameter) -&gt; shardingValue</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> renameFn   (originalTableName, shardingValue) -&gt; shardedTableName</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;R, S&gt; <span class="function">ConfigurationHolder&lt;R, S&gt; <span class="title">newInstance</span><span class="params">(Configuration configuration,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                               TableImpl table,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                               Function&lt;R, S&gt; shardingFn,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                               BiFunction&lt;String, S, String&gt; renameFn)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ConfigurationHolder&lt;&gt;(configuration, table.getName(), shardingFn, renameFn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ConfigurationHolder</span><span class="params">(Configuration configuration,</span></span></span><br><span class="line"><span class="function"><span class="params">                                String originalName,</span></span></span><br><span class="line"><span class="function"><span class="params">                                Function&lt;R, S&gt; shardingFn,</span></span></span><br><span class="line"><span class="function"><span class="params">                                BiFunction&lt;String, S, String&gt; renameFn)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.shardingFn = shardingFn;</span><br><span class="line">        <span class="keyword">this</span>.cache = CacheBuilder</span><br><span class="line">          .newBuilder()</span><br><span class="line">          .build(<span class="keyword">new</span> CacheLoader&lt;S, Configuration&gt;() &#123;</span><br><span class="line">              <span class="meta">@Override</span></span><br><span class="line">              <span class="function"><span class="keyword">public</span> Configuration <span class="title">load</span><span class="params">(S s)</span> </span>&#123;</span><br><span class="line">                  Settings settings = <span class="keyword">new</span> Settings()</span><br><span class="line">                    .withRenderMapping(<span class="keyword">new</span> RenderMapping()</span><br><span class="line">                      .withSchemata(<span class="keyword">new</span> MappedSchema()</span><br><span class="line">                        .withInputExpression(Pattern.compile(<span class="string">".*"</span>))</span><br><span class="line">                        .withTables(<span class="keyword">new</span> MappedTable()</span><br><span class="line">                          .withInput(originalName)</span><br><span class="line">                          .withOutput(renameFn.apply(originalName, s)))));</span><br><span class="line">                  <span class="keyword">return</span> configuration.derive(settings);</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Configuration <span class="title">get</span><span class="params">(R shardingParameter)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cache.getUnchecked(shardingFn.apply(shardingParameter));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Use"><a href="#Use" class="headerlink" title="Use"></a>Use</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">DefaultConfiguration config;</span><br><span class="line">TableImpl&lt;Record&gt; fakeTable;</span><br><span class="line"></span><br><span class="line">ConfigurationHolder&lt;Integer, Integer&gt; holder = ConfigurationHolder.newInstance(config, fakeTable, id -&gt; id &amp; (<span class="number">1</span> &lt;&lt; <span class="number">4</span>), (original, val) -&gt; oldName + val);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> id = <span class="number">1000</span>;</span><br><span class="line">DSL.using(holder.get(id))</span><br><span class="line">  .selectFrom(table);</span><br></pre></td></tr></table></figure>
+
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>最初试想 <code>jooq</code> 的 <code>SQL</code> 语句来源于对象, <code>TableImpl</code> 对象的构造函数中有一个包含名称的构造函数.</p>
+<blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">TableImpl</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>(DSL.name(name));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>似乎是这个决定了表名. 那么创建一个修改过表名的 <code>TableImpl</code> 对象应该能实现表名的修改. 结果当然未尝所愿.</p>
+<p>这个构造器只是用来 <em>alias</em> 的 (取一个别名).</p>
+<p>关于表的重命名, 官网上给出的做法是</p>
+<blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Settings settings = <span class="keyword">new</span> Settings()</span><br><span class="line">  .withRenderMapping(<span class="keyword">new</span> RenderMapping()</span><br><span class="line">    .withSchemata(<span class="keyword">new</span> MappedSchema()</span><br><span class="line">      .withInput(<span class="string">"DEV"</span>)</span><br><span class="line">      .withTables(<span class="keyword">new</span> MappedTable()</span><br><span class="line">        .withInput(<span class="string">"AUTHOR"</span>)</span><br><span class="line">        .withOutput(<span class="string">"MY_APP__AUTHOR"</span>))));</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>修改 <code>Settings</code>, 指定相应的 <code>Schema</code> 的相应的 <code>Table</code> 进行重命名.</p>
+<p>于是, 就有了<a href="#Code">上述</a>代码. 对 <code>Configuration</code> 进行 <code>derive</code> 且缓存. 使用时, 从 <code>LoadingCache</code> 中获取派生的 <code>Configuration</code> , 使用 <code>DSL.using(Configuration configuration)</code> 进行 <code>SQL</code> 操作.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>尽整些没屁用的, 好好的数据库分表不用, 非要折腾个 mybatis 插件分表.</p>
+<h1 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h1><blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DSLContext <span class="title">using</span><span class="params">(Configuration configuration)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> DefaultDSLContext(configuration);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><code>DSLContext.using</code> 是创建一个新的 <code>DefaultDSLContext</code>, 其实可以把 <code>DSLContext</code> 给缓存起来, 而不仅仅是 <code>Configuration</code>.</p>
+]]></content>
+      <categories>
+        <category>code</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Jooq</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GitHub-Pages Hexo Travis NexT</title>
+    <url>/2019/11/14/GitHub-Pages-with-Hexo/</url>
+    <content><![CDATA[<h1 id="Gitpage"><a href="#Gitpage" class="headerlink" title="Gitpage"></a>Gitpage</h1><p>用静态 html 编写渲染 markdown 显然是一个好主意.</p>
+<p>Gitpage 本身提供的是 Jekyll, Jekyll 在 windows 下环境准备就很麻烦了, 于是找了找其他的, 就 hexo 了.</p>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="Travis-CI"><a href="#Travis-CI" class="headerlink" title="Travis CI"></a>Travis CI</h3><p><a href="https://hexo.io/zh-cn/docs/github-pages" target="_blank" rel="noopener">GitHub Pages</a> 按照官方说明配置 <em>Travis CI</em>, 在 <em>Step 10</em> 的时候遇到了问题.</p>
+<p>在 Hexo 官方文档的配置中, Travis CI 将 build 推到了 <em>gh-pages</em> 分支. 而 GitHub Pages 的部署分支无法修改.</p>
+<p>根据 github 官方说明</p>
+<blockquote>
+<p>User pages must be built from the master branch</p>
+</blockquote>
+<p><em>username.github.io</em> 被认为是 <em>user pages</em>, 而 <em>user pages</em> 只能从 master branch 构建.</p>
+<p>既然 Gitpages 的构建分支无法修改, 那只能修改 Travis CI 配置, 把 build 结果推到 master 分支.</p>
+<p>在 <a href="https://docs.travis-ci.com/user/deployment/pages/" target="_blank" rel="noopener">Travis Docs</a> 中找到目标分支的配置是 <code>deploy.target_branch</code></p>
+<p>修改 <em>.travis.yml</em></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  target_branch: master</span><br></pre></td></tr></table></figure>
+
+<p>这样, Travis CI 会将编译结果推到 github/repository 的 master 分支.</p>
+<p>这就得需要另一个分支了, 用于存放源文件, 创建一个新分支, 姑且命名为 <em>src</em> 吧, 将源文件推到 src 分支. 同时, 需要修改 <em>.travis.yml</em>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">branches:</span><br><span class="line">  only:</span><br><span class="line">    - src</span><br><span class="line">deploy</span><br><span class="line">  on:</span><br><span class="line">    branch: src</span><br></pre></td></tr></table></figure>
+
+<p>这样, Travis CI 只会在收到 src 分支 push 的时候才会编译 src 分支.</p>
+<p>同时, 再建一个 dev 分支, 用于开发, 总不能写到一半的东西就放那, 确定写完之后, 再 merge dev 到 src.</p>
+<h3 id="hexo-deployer-git"><a href="#hexo-deployer-git" class="headerlink" title="hexo-deployer-git"></a>hexo-deployer-git</h3><p>有没有必要用 Travis CI? 其实是没有的.</p>
+<p>就在上一篇坑爹文档下面 2 行, 就有个使用 <a href="https://hexo.io/zh-cn/docs/one-command-deployment" target="_blank" rel="noopener">hexo-deployer-git</a> 进行部署的文档.</p>
+<p><em>hexo-deployer</em> 是本地插件, 在本地编译后上传到指定分支. 官网文档里配置也写的很清楚.</p>
+<h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><h3 id="挑选主题"><a href="#挑选主题" class="headerlink" title="挑选主题"></a>挑选主题</h3><p>部署算是完了, 接下来得选择一个 theme. 不同的 theme 差距还是很大的. </p>
+<p><a href="https://hexo.io/themes/index.html" target="_blank" rel="noopener">Hexo Themes</a> 里有很多主题, 但使用情况就有些堪忧了.</p>
+<p>Hexo 的 theme 的使用方式是将 theme 下载下来, 放到 <em>./themes/</em> 目录下. 在 <em>_config.yml</em> 中修改 <em>theme</em> 设置.</p>
+<p>绝大部分主题会推荐 <code>git clone *** themes/{theme_name}</code>, git clone 到 themes目录下. 这样 clone 下来的是默认分支, 很多主题维护不佳, 默认分支甚至有些bug…</p>
+<p>贴一下我找的几个主题吧.</p>
+<p><a href="https://github.com/mkkhedawat/clexy" target="_blank" rel="noopener">clexy</a> 这是我找的第一个主题, 相当的简洁.</p>
+<p><a href="https://github.com/denjones/hexo-theme-chan" target="_blank" rel="noopener">chan</a> 同样也是一个简洁的主题, 但是不知为何, 修改 <em>_config.yml</em> 无法生效, 放弃了.</p>
+<p>期间, 还看见 2 个很漂亮的主题.</p>
+<p><a href="https://github.com/Fechin/hexo-theme-diaspora" target="_blank" rel="noopener">diaspora</a> 相当精美的一个主题, 喜欢展示图片的朋友会很喜欢.</p>
+<p><a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="noopener">fluid</a> material design, 很漂亮, 维护人数还挺多的. 主题好不好用, 主要看维护的好不好. 除非像第一个主题一样, 真的很简洁.</p>
+<p>我懒得折腾一堆图片, 最终选择了 <a href="https://github.com/theme-next/hexo-theme-next" target="_blank" rel="noopener">next</a>.</p>
+<h3 id="NexT"><a href="#NexT" class="headerlink" title="NexT"></a>NexT</h3><p>NexT 维护的很好, 功能丰富, 使用起来很方便.</p>
+<p>NexT 推荐的安装方式是 <code>git clone https://github.com/theme-next/hexo-theme-next themes/next</code>.<br>而 NexT 的配置在 <em>./themes/next/_config.yml</em> 里.<br>如果修改这个, 更新时 pull 会比较麻烦, 很可能会引起冲突.<br>里面有个 <em>override</em> 属性, 查看注释.</p>
+<blockquote>
+<p>If false, merge configs from <code>_data/next.yml</code> into default configuration (rewrite).<br>If true, will fully override default configuration by options from <code>_data/next.yml</code> (override). Only for NexT settings.<br>And if true, all config from default NexT <code>_config.yml</code> must be copied into <code>next.yml</code>. Use if you know what you are doing.<br>Useful if you want to comment some options from NexT <code>_config.yml</code> by <code>next.yml</code> without editing default config.<br>override: false</p>
+</blockquote>
+<p>也就是说, 默认情况下, <em>_data/next.yml</em> 会覆盖掉 <em>./themes/next/_config.yml</em> 的配置. 这样就很容易了. 建一个 <em>./source/_data/next.yml</em> 文件, 把配置写进去. 这样就不用修改 <em>./themes/next</em> 里的内容.</p>
+<h3 id="主题与部署"><a href="#主题与部署" class="headerlink" title="主题与部署"></a>主题与部署</h3><p>目前 <em>./themes/next</em> 是没有上传 github 的, 这样整个工程是不完整的, Travis CI 是无法编译的. </p>
+<p>要不要把 <em>./themes/next</em> 上传?</p>
+<ul>
+<li>上传也会导致 next 更新的时候变得有些麻烦.</li>
+<li>不上传, 就只能本地编译, <em>hexo-deployer</em> 部署</li>
+</ul>
+<p>想想别的办法.</p>
+<p>Travis CI 的工作流程是, 执行 <em>script</em> 再到 <em>after</em>. Travis CI 是绑定 github 的, Travis CI 环境应该也能执行 <code>git</code> 命令.<br>在 <em>.travis.yml</em> 里 <code>hexo generate</code> 前加上一行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">script:</span><br><span class="line">  - git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br><span class="line">  - hexo generate # generate static files</span><br></pre></td></tr></table></figure>
+
+<h2 id="404"><a href="#404" class="headerlink" title="404"></a>404</h2><p>网上找了很多关于 404 配置的内容, 都无法生效. 后面, 找到了一个 <a href="https://github.com/ppoffice/hexo-theme-icarus/issues/66#issuecomment-166110566" target="_blank" rel="noopener">github issues</a> 才明白, 本地重定向是无效的. 所以, 无论怎么设置, 本地 <code>hexo server</code> 都无法进行 404 页面重定向. 不过, 还是可以通过 <a href="http://localhost:4000/404.html" target="_blank" rel="noopener">http://localhost:4000/404.html</a> 进行查看修改页面的.</p>
+<p>我没特别准备 404 页面, 就写了一个 md page.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 404</span><br><span class="line">comments: false</span><br><span class="line">permalink: /404</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>是否需要这个 <code>permalink: /404</code> 我就不清楚了, 毕竟本地无法重定向, 得部署到 <em>github pages</em> 上才能检查.</p>
+<h2 id="sitemap"><a href="#sitemap" class="headerlink" title="sitemap"></a>sitemap</h2><p>blog 里能加的配置还挺多的, 今天还研究了下 sitemap 与 google search console.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install hexo-generator-sitemap --save</span><br></pre></td></tr></table></figure>
+
+<p>首先, 添加 <code>hexo</code> 的 <code>sitemap</code> 插件. 再在 <em>_config.yml</em> 里加上配置.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sitemap:</span><br><span class="line">    path: sitemap.xml</span><br><span class="line">    rel: true</span><br></pre></td></tr></table></figure>
+
+<p>部署完成之后, 就可以去 <a href="https://search.google.com/search-console/" target="_blank" rel="noopener">Google Search Console</a> 里添加站点.</p>
+<p>在 <code>/source/</code> 下添加 <em>robots.txt</em>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Allow: /</span><br><span class="line">Allow: /about/</span><br><span class="line">Allow: /archives/</span><br><span class="line">Allow: /categories/</span><br><span class="line">Allow: /tags/</span><br><span class="line"></span><br><span class="line">Allow: /images/</span><br><span class="line"></span><br><span class="line">Allow: /css/</span><br><span class="line">Allow: /js/</span><br><span class="line">Allow: /lib/</span><br><span class="line"></span><br><span class="line">Sitemap: https://icatream.github.io</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.google.com/webmasters/tools/robots-testing-tool" target="_blank" rel="noopener">Robots testing</a></p>
+<p>网上看到的内容都是</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Disallow: /css/</span><br><span class="line">Disallow: /js/</span><br><span class="line">Disallow: /lib/</span><br></pre></td></tr></table></figure>
+
+<p>但这样会导致 Googlebot 的抓取异常. 这些内容也都应该被允许抓取.</p>
+<p><code>hexo</code> 官方的 <code>hexo-generator-sitemap</code> 似乎不够 <em>SEO (search engine optimization)</em> 友好. 考虑换其他的 <em>sitemap-generator</em>.</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>最终没有上传 <em>./themes/</em> , Travis CI 通过 <code>git clone</code> 获取 <em>./themes/next</em>, 之后编译.</p>
+<p>那和直接使用 <em>hexo-deployer</em> 有什么差距吗?</p>
+<p>不知道…</p>
+]]></content>
+      <categories>
+        <category>essay</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Rust Windows环境下的编译与debug</title>
+    <url>/2019/11/14/Rust-compile-and-debug-in-windows/</url>
+    <content><![CDATA[<h1 id="MSVC"><a href="#MSVC" class="headerlink" title="MSVC"></a>MSVC</h1><p><a href="https://www.rust-lang.org/" target="_blank" rel="noopener">Rust官网</a> 提供了 <em>rustup-init.exe</em>.<br>除此之外, 还需要一个c编译器. windows环境说的也不是很清楚.<br>好在9102年了, 微软出了一个简单的安装工具 <em>vs_buildtools</em>.<br>在这个页面下 <a href="https://visualstudio.microsoft.com/zh-hans/downloads/" target="_blank" rel="noopener">Visual Studio Download</a>, 找到 <strong>Visual Studio 生成工具</strong> 下载运行, 选择需要的功能安装即可, 无需安装整个 <em>Visaul Studio</em>.</p>
+<h2 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h2><p>国内嘛, <em>cargo</em> 当然是需要 proxy 的.<br>在 <em>C:\Users\username.cargo</em> 下创建 <em>config</em> 文件.<br>内容如下:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[http]</span><br><span class="line">proxy = &quot;127.0.0.1:1080&quot;</span><br><span class="line"></span><br><span class="line">[https]</span><br><span class="line">proxy = &quot;127.0.0.1:1080&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><em>rustup</em> 也需要 proxy.</p>
+</li>
+<li><p>cmd proxy</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set http_proxy=127.0.0.1:1080</span><br><span class="line">set https_proxy=127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>powershell proxy</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ENV:HTTP_PROXY=127.0.0.1:1080</span><br><span class="line">$ENV:HTTPS_PROXY=127.0.0.1:1080</span><br></pre></td></tr></table></figure>
+
+<h2 id="Vscode-Debug"><a href="#Vscode-Debug" class="headerlink" title="Vscode Debug"></a>Vscode Debug</h2><p>vscode 安装 <em>Rust Extension Pack</em> 插件(全套Rust插件), <em>C/C++</em>, <em>Native Debug</em> 插件, 就可以用 msvc 工具链 debug 了. 但每次都得改需要 debug 的 .exe 文件名, 很麻烦(不知道有没有更好的办法). 而且, 在查看 <code>Option&lt;Box&lt;T&gt;&gt;</code> 的时候会出些问题, 明明是 <code>Some</code> 却显示 <code>None</code>.</p>
+<h1 id="GNU"><a href="#GNU" class="headerlink" title="GNU"></a>GNU</h1><p>Jetbrains 的 Clion 只能用 gnu 工具链进行 debug.</p>
+<h2 id="工具链切换"><a href="#工具链切换" class="headerlink" title="工具链切换"></a>工具链切换</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rustup default stable-msvc</span><br><span class="line">rustup default stable-gnu</span><br><span class="line">rustup default nightly-msvc</span><br><span class="line">rustup default nightly-gnu</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装-mingw64"><a href="#安装-mingw64" class="headerlink" title="安装 mingw64"></a>安装 mingw64</h2><p>windows 下安装 gnu 环境需要安装 mingw64.</p>
+<p><a href="http://mingw-w64.org/doku.php/download" target="_blank" rel="noopener">mingw-w64.org</a> 里有大量 toolchains, 选择 <em>MingW-W64-builds</em> 安装即可.<br><em>MingW-W64-builds</em> 是一个 installer, 也就是实际内容还是得再下载的, 然而国内显然无法下载. 这次 proxy 也失败了(可能得路由器 proxy 了). 不过可以直接找到文件源下载.</p>
+<p><a href="https://sourceforge.net/projects/mingw-w64/files/" target="_blank" rel="noopener">mingw-w64/files</a> 里有 2 * 2 * 2 个版本. installer 的功能仅仅是在这些版本中选择.<br>其中, <em>x86_64</em> 和 <em>i686</em> 分别是 64 位和 32 位, 我们当然是选择 64 位了.<br><em>seh</em> 和 <em>sjlj</em> 是异常处理, 其中 <em>seh</em> 是 windows 原生的, 性能更好, 我们反正不用在意其他细节, 选 <em>seh</em> 就完事了.<br><em>posix</em> 和 <em>win32</em> 是多线程相关的, 具体差距我没弄清楚, 大多数还是选 <em>posix</em>. 所以选择最新的 <em>x86_64-posix-seh</em> 下载就好.</p>
+<p>再将 <em>rustup</em> 切换到 gnu 工具链, Clion 中设置一下 Toolchains 就可以使用 Clion 进行 debug 了. Clion 的 debug 界面就清晰很多了, 也不用每次在配置文件中修改 .exe 文件名.</p>
+<p>但是, <code>Option&lt;Box&lt;T&gt;&gt;</code> 完全没有内容, 之前 vscode 存在异常, Clion 里直接看不了堆内存…</p>
+<h1 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h1><p>最开始装 <em>mingw</em> 的时候, 找来找去, 看推荐装 <em>win-builds</em>, 就装了 <em>win-builds</em> . 第一次走了狗屎运了, 居然把 <em>win-builds</em> 装完了.</p>
+<p>切换到 gnu 工具链, 可以编译运行, 但开始 debug 就卡住, 过一会, Clion 异常, <em>commands timed out</em>. 网上也没找到原因, 暂时就把这事放了一段时间.</p>
+<p>后面想想是不是之前 <em>win-builds</em> 没有安装完全, 在 <a href="http://mingw-w64.org/doku.php/download" target="_blank" rel="noopener">mingw-w64.org</a> 里找到 <a href="http://win-builds.org/doku.php/download_and_installation_from_windows" target="_blank" rel="noopener">win-builds</a>. 按照下面的 <em>Proxies</em> 说明, 重新安装了一次 (<em>win-builds.exe</em> 的命名不同, 运行界面居然不一样!!). 这次用 <em>wget</em> 把文件全下载下来再装, 完了还是一样, debug 就卡住.</p>
+<p>网上查了查明白了, 确实是 <em>win-builds</em> 的问题, <em>win-builds</em> 更全面, 主要是用于交叉编译的, <em>mingw-w64</em> 的兼容性更好.</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一趟下来, 别的没啥, proxy 命令学了很多.</p>
+]]></content>
+      <categories>
+        <category>essay</category>
+      </categories>
+      <tags>
+        <tag>Rust</tag>
+      </tags>
+  </entry>
+</search>
